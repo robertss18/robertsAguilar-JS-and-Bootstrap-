@@ -1,0 +1,141 @@
+﻿<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Ejercicio3</title>
+    <style>
+        /* Estilos necesarios*/
+        .calculator {
+            max-width: 300px;
+            margin: auto;
+            margin-top: 50px;
+            border: 2px solid #007bff; /* Color del borde de la calculadora */
+            border-radius: 15px; /* Bordes redondeados para la calculadora */
+            padding: 10px; /* Espacio interno para la calculadora */
+            background-color: #f8f9fa; /* Color de fondo */
+        }
+
+        .resultado {
+            height: 50px;
+            font-size: 24px;
+            text-align: right;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px; /* Bordes redondeados para el resultado */
+            background-color: #ffffff; /* Color de fondo del resultado */
+            margin-bottom: 10px; /* Margen inferior para separar del contenedor de botones */
+        }
+
+        .contenedor-botones {
+            border: 2px solid #007bff; /* Color del borde de la sección de botones */
+            border-radius: 15px; /* Bordes redondeados para la sección de botones */
+            padding: 10px; /* Espacio interno para la sección de botones */
+        }
+
+        .btn {
+            font-size: 24px;
+            border-radius: 20px; /* Bordes redondeados para los botones */
+            margin: 5px; /* Espacio entre botones */
+        }
+
+        .row {
+            justify-content: center; /* Centra los botones en la fila */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <input type="text" class="form-control resultado" disabled placeholder="Resultado" value="">
+
+        <div class="contenedor-botones">
+            <div class="row">
+                <div class="col-3"><button class="btn btn-light btn-block">1</button></div>
+                <div class="col-3"><button class="btn btn-light btn-block">2</button></div>
+                <div class="col-3"><button class="btn btn-light btn-block">3</button></div>
+                <div class="col-3"><button class="btn btn-light btn-block">+</button></div>
+            </div>
+
+            <div class="row">
+                <div class="col-3"><button class="btn btn-light btn-block">4</button></div>
+                <div class="col-3"><button class="btn btn-light btn-block">5</button></div>
+                <div class="col-3"><button class="btn btn-light btn-block">6</button></div>
+                <div class="col-3"><button class="btn btn-light btn-block">-</button></div>
+            </div>
+
+            <div class="row">
+                <div class="col-3"><button class="btn btn-light btn-block">7</button></div>
+                <div class="col-3"><button class="btn btn-light btn-block">8</button></div>
+                <div class="col-3"><button class="btn btn-light btn-block">9</button></div>
+                <div class="col-3"><button class="btn btn-light btn-block">×</button></div>
+            </div>
+
+            <div class="row">
+                <div class="col-3"><button class="btn btn-light btn-block">C</button></div>
+                <div class="col-3"><button class="btn btn-light btn-block">0</button></div>
+                <div class="col-3"><button class="btn btn-light btn-block">=</button></div>
+                <div class="col-3"><button class="btn btn-light btn-block">/</button></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const botones = document.querySelectorAll('.btn');
+        const campoResultado = document.querySelector('.resultado');
+        let entradaActual = '';
+        let operacion = '';
+        let primerOperando = null;
+
+        botones.forEach(boton => {
+            boton.addEventListener('click', () => {
+                const textoBoton = boton.textContent;
+
+                if (textoBoton === 'C') {
+                    // Limpiar todo
+                    entradaActual = '';
+                    primerOperando = null;
+                    operacion = '';
+                    campoResultado.value = '';
+                } else if (textoBoton === '=') {
+                    // Realizar el calculo
+                    if (primerOperando !== null && operacion) {
+                        entradaActual = calcular(primerOperando, parseFloat(entradaActual), operacion).toString();
+                        campoResultado.value = entradaActual;
+                        primerOperando = null;
+                        operacion = '';
+                    }
+                } else if (['+', '-', '×', '/'].includes(textoBoton)) {
+                    // Guardar la operación y el primer operando
+                    if (entradaActual) {
+                        primerOperando = parseFloat(entradaActual);
+                        operacion = textoBoton === '×' ? '*' : textoBoton; // Convertir el símbolo a uno valido
+                        entradaActual = '';
+                    }
+                } else {
+                    // Agregar numeros al input
+                    entradaActual += textoBoton;
+                    campoResultado.value = entradaActual;
+                }
+            });
+        });
+        // Con la siguiente función podemos realizar los calculos correspondientes al operador necesitado.
+        function calcular(primer, segundo, operacion) {
+            switch (operacion) {
+                case '+':
+                    return primer + segundo;
+                case '-':
+                    return primer - segundo;
+                case '*':  // Cambiamos '×' a '*' para la operación
+                    return primer * segundo;
+                case '/':
+                    return primer / segundo;
+                default:
+                    return segundo;
+            }
+        }
+    </script>
+
+    
+</body>
+</html>

@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" 
+          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <title>Ejercicio1</title>
+</head>
+<body>
+
+    <div class="container">
+        <h2 class="my-4"><strong>FACTURA CLIENTE:</strong></h2>
+        <form name="formulario1" id="frm1">
+            <div class="row mb-3">
+                <div class="col">
+                    <label for="idNombre">Nombre:</label>
+                    <input type="text" class="form-control" name="text" id="idNombre" />
+                </div>
+                <div class="col">
+                    <label for="idApellidos">Apellidos:</label>
+                    <input type="text" class="form-control" name="text" id="idApellidos" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col">
+                    <label for="cargo">Cargo:</label>
+                    <select class="form-control" name="lista1" id="cargo">
+                        <option name="cargo" value="Albañileria">Albañilería</option>
+                        <option name="cargo" value="Fontaneria">Fontanería</option>
+                        <option name="cargo" value="Electricidad">Electricidad</option>
+                        <option name="cargo" value="Carpinteria">Carpintería</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label for="idHorasTrabajadas">Horas trabajadas:</label>
+                    <input type="text" class="form-control" name="text" id="idHorasTrabajadas" />
+                </div>
+            </div>
+
+            <hr style="border: 1px solid #000; width: 100%; margin-left: 0;">
+
+            <div class="row mb-3">
+                <div class="col">
+                    <label for="precioHora">Precio por hora:</label>
+                    <input type="text" class="form-control" id="precioHora">
+                </div>
+                <div class="col">
+                    <label for="baseImponible">Importe:</label>
+                    <input type="text" class="form-control" id="baseImponible" readonly>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" name="si" value="si" id="box">
+                        <label class="form-check-label" for="box">Desea añadir IVA? (21%)</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <label for="totalFactura">Total:</label>
+                    <input type="text" class="form-control" id="totalFactura" readonly>
+                </div>
+            </div>
+
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" name="conforme" value="conforme" id="conforme">
+                <label class="form-check-label" for="conforme">¿Está conforme?</label>
+            </div>
+
+            <button type="button" class="btn btn-primary" id="mostrarFactura" onclick="factura.mostrarConsola()">Ver Factura en Consola</button>
+        </form>
+    </div>
+</body>
+</html>
+<script>
+    //Datos necesarios para la obtención de la factura
+    var factura = {
+        cliente: {
+            nombre: "",
+            apellidos: "",
+            cargo: ["Albañileria", "Fontaneria", "Electricidad", "Carpinteria"],
+            horasTrabajadas: ""
+        },
+
+        importes: {
+            precioHora: "",
+            baseImponible: "",
+            iva: 0.21,
+            total: "",
+        },
+
+        mostrarConsola: function () {
+            //Datos Cliente
+            nombre = document.getElementById("idNombre").value;
+            this.cliente.nombre = nombre
+            apellido = document.getElementById("idApellidos").value;
+            this.cliente.apellidos = apellido
+            indice = document.getElementById("frm1").lista1.selectedIndex;
+            this.cliente.cargo = document.getElementById("frm1").lista1.options[indice].value;
+            horasTrabajadas = document.getElementById("idHorasTrabajadas").value;
+            this.cliente.horasTrabajadas = horasTrabajadas;
+
+            //Datos de Pago
+            precioHora = document.getElementById("precioHora").value;
+            this.importes.precioHora = precioHora;
+
+            baseImponible = horasTrabajadas * precioHora;
+            total = baseImponible + (baseImponible * this.importes.iva);
+            this.importes.total = total;
+
+            //Sí no está conforme no se lanza.
+            let conformed = document.getElementById("conforme");
+            if (!conformed.checked) {
+                alert("Por favor, confirme que está conforme.");
+                return; // Detener la ejecución si no está marcada
+            }
+
+            //Impresión por consola según IVA + mostrar valores
+            current_box = document.getElementById("box");
+            if (current_box.checked) {
+                base = document.getElementById("baseImponible");
+                totalIva = document.getElementById("totalFactura");
+                base.value = baseImponible
+                totalIva.value = total;
+                datos = "FACTURA: " + "\n"
+                    + this.cliente.nombre + "\n"
+                    + this.cliente.apellidos + "\n"
+                    + this.cliente.cargo + "\n"
+                    + this.cliente.horasTrabajadas + "\n"
+                    + "Base Imponible: " + baseImponible + "\n"
+                    + "Total con Iva: " + total;
+
+            } else {
+                base = document.getElementById("baseImponible");
+                totalIva = document.getElementById("totalFactura");
+                base.value = baseImponible;
+                totalIva.value = baseImponible;
+                datos = "FACTURA: " + "\n"
+                    + this.cliente.nombre + "\n"
+                    + this.cliente.apellidos + "\n"
+                    + this.cliente.cargo + "\n"
+                    + this.cliente.horasTrabajadas + "\n"
+                    + "Base Imponible: " + baseImponible + "\n"
+                    + "Total sin Iva: " + baseImponible;
+
+            }
+            console.log(datos);
+        }
+    }
+
+
+
+</script>
